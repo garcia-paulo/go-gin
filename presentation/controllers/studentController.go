@@ -3,19 +3,19 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/garcia-paulo/go-gin/application/services"
 	"github.com/garcia-paulo/go-gin/domain/models"
+	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/gin-gonic/gin"
 )
 
 func FindStudents(c *gin.Context) {
-	c.JSON(http.StatusOK, services.FindStudents())
+	c.JSON(http.StatusOK, repositories.FindStudents())
 }
 
 func FindStudentById(c *gin.Context) {
 	id := c.Param("studentId")
-	student := services.FindStudentById(id)
 
+	student := repositories.FindStudentById(id)
 	if student.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -28,8 +28,8 @@ func FindStudentById(c *gin.Context) {
 
 func FindStudentByCpf(c *gin.Context) {
 	cpf := c.Param("studentCpf")
-	student := services.FindStudentByCpf(cpf)
 
+	student := repositories.FindStudentByCpf(cpf)
 	if student.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -42,28 +42,42 @@ func FindStudentByCpf(c *gin.Context) {
 
 func CreateStudent(c *gin.Context) {
 	student := models.Student{}
-	err := c.ShouldBindJSON(&student)
-	if err != nil {
+
+	if err := c.ShouldBindJSON(&student); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	services.CreateStudent(&student)
+	if err := student.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	repositories.CreateStudent(&student)
 	c.JSON(http.StatusOK, student)
 }
 
 func UpdateStudent(c *gin.Context) {
 	studentId := c.Param("studentId")
+
 	data := models.Student{}
-	err := c.ShouldBindJSON(&data)
-	if err != nil {
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 	}
+	if err := data.Validate(); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	student := services.UpdateStudent(studentId, data)
+	student := repositories.FindStudentById(studentId)
+	repositories.UpdateStudent(&student, data)
 	if student.ID == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -76,7 +90,8 @@ func UpdateStudent(c *gin.Context) {
 
 func DeleteStudent(c *gin.Context) {
 	studentId := c.Param("studentId")
-	services.DeleteStudent(studentId)
+
+	repositories.DeleteStudent(studentId)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Student succesfully deleted.",
 	})

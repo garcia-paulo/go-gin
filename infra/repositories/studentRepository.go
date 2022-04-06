@@ -27,11 +27,10 @@ func CreateStudent(student *models.Student) {
 	database.DB.Create(&student)
 }
 
-func UpdateStudent(student models.Student, data models.Student) models.Student {
+func UpdateStudent(student *models.Student, data models.Student) {
 	database.DB.Model(&student).UpdateColumns(data)
-	return student
 }
 
-func DeleteStudent(student models.Student) {
-	database.DB.Delete(&student)
+func DeleteStudent(studentId string) {
+	database.DB.Delete(&models.Student{}, studentId)
 }
