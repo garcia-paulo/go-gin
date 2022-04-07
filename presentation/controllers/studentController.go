@@ -3,96 +3,106 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/garcia-paulo/go-gin/domain/models"
-	"github.com/garcia-paulo/go-gin/infra/repositories"
+	"github.com/garcia-paulo/go-gin/Domain/models"
+	"github.com/garcia-paulo/go-gin/Infra/repositories"
 	"github.com/gin-gonic/gin"
 )
 
-func FindStudents(c *gin.Context) {
-	c.JSON(http.StatusOK, repositories.FindStudents())
+type StudentController struct {
+	studentRepository *repositories.StudentRepository
 }
 
-func FindStudentById(c *gin.Context) {
-	id := c.Param("studentId")
+func NewStudentController(studentRepository *repositories.StudentRepository) *StudentController {
+	return &StudentController{
+		studentRepository: studentRepository,
+	}
+}
 
-	student := repositories.FindStudentById(id)
+func (c *StudentController) FindStudents(context *gin.Context) {
+	context.JSON(http.StatusOK, c.studentRepository.FindStudents())
+}
+
+func (c *StudentController) FindStudentById(context *gin.Context) {
+	id := context.Param("studentId")
+
+	student := c.studentRepository.FindStudentById(id)
 	if student.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{
+		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, student)
+	context.JSON(http.StatusOK, student)
 }
 
-func FindStudentByCpf(c *gin.Context) {
-	cpf := c.Param("studentCpf")
+func (c *StudentController) FindStudentByCpf(context *gin.Context) {
+	cpf := context.Param("studentCpf")
 
-	student := repositories.FindStudentByCpf(cpf)
+	student := c.studentRepository.FindStudentByCpf(cpf)
 	if student.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{
+		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, student)
+	context.JSON(http.StatusOK, student)
 }
 
-func CreateStudent(c *gin.Context) {
+func (c *StudentController) CreateStudent(context *gin.Context) {
 	student := models.Student{}
 
-	if err := c.ShouldBindJSON(&student); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+	if err := context.ShouldBindJSON(&student); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 	if err := student.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	repositories.CreateStudent(&student)
-	c.JSON(http.StatusOK, student)
+	c.studentRepository.CreateStudent(&student)
+	context.JSON(http.StatusOK, student)
 }
 
-func UpdateStudent(c *gin.Context) {
-	studentId := c.Param("studentId")
+func (c *StudentController) UpdateStudent(context *gin.Context) {
+	studentId := context.Param("studentId")
 
 	data := models.Student{}
-	if err := c.ShouldBindJSON(&data); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+	if err := context.ShouldBindJSON(&data); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 	}
 	if err := data.Validate(); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	student := repositories.FindStudentById(studentId)
-	repositories.UpdateStudent(&student, data)
+	student := c.studentRepository.FindStudentById(studentId)
+	c.studentRepository.UpdateStudent(&student, data)
 	if student.ID == 0 {
-		c.JSON(http.StatusNotFound, gin.H{
+		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, student)
+	context.JSON(http.StatusOK, student)
 }
 
-func DeleteStudent(c *gin.Context) {
-	studentId := c.Param("studentId")
+func (c *StudentController) DeleteStudent(context *gin.Context) {
+	studentId := context.Param("studentId")
 
-	repositories.DeleteStudent(studentId)
-	c.JSON(http.StatusOK, gin.H{
+	c.studentRepository.DeleteStudent(studentId)
+	context.JSON(http.StatusOK, gin.H{
 		"message": "Student succesfully deleted.",
 	})
 }

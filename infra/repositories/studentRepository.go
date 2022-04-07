@@ -1,36 +1,46 @@
 package repositories
 
 import (
-	"github.com/garcia-paulo/go-gin/domain/models"
-	"github.com/garcia-paulo/go-gin/infra/database"
+	"github.com/garcia-paulo/go-gin/Domain/models"
+	"gorm.io/gorm"
 )
 
-func FindStudents() []models.Student {
+type StudentRepository struct {
+	database *gorm.DB
+}
+
+func NewStudentRepository(database *gorm.DB) *StudentRepository {
+	return &StudentRepository{
+		database: database,
+	}
+}
+
+func (r *StudentRepository) FindStudents() []models.Student {
 	students := []models.Student{}
-	database.DB.Find(&students)
+	r.database.Find(&students)
 	return students
 }
 
-func FindStudentById(id string) models.Student {
+func (r *StudentRepository) FindStudentById(id string) models.Student {
 	student := models.Student{}
-	database.DB.First(&student, id)
+	r.database.First(&student, id)
 	return student
 }
 
-func FindStudentByCpf(cpf string) models.Student {
+func (r *StudentRepository) FindStudentByCpf(cpf string) models.Student {
 	student := models.Student{}
-	database.DB.Where(&models.Student{CPF: cpf}).First(&student)
+	r.database.Where(&models.Student{CPF: cpf}).First(&student)
 	return student
 }
 
-func CreateStudent(student *models.Student) {
-	database.DB.Create(&student)
+func (r *StudentRepository) CreateStudent(student *models.Student) {
+	r.database.Create(&student)
 }
 
-func UpdateStudent(student *models.Student, data models.Student) {
-	database.DB.Model(&student).UpdateColumns(data)
+func (r *StudentRepository) UpdateStudent(student *models.Student, data models.Student) {
+	r.database.Model(&student).UpdateColumns(data)
 }
 
-func DeleteStudent(studentId string) {
-	database.DB.Delete(&models.Student{}, studentId)
+func (r *StudentRepository) DeleteStudent(studentId string) {
+	r.database.Delete(&models.Student{}, studentId)
 }

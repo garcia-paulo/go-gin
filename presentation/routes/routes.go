@@ -1,17 +1,27 @@
 package routes
 
 import (
-	"github.com/garcia-paulo/go-gin/presentation/controllers"
+	"github.com/garcia-paulo/go-gin/Presentation/controllers"
 	"github.com/gin-gonic/gin"
 )
 
-func HandleRequests() {
-	r := gin.Default()
-	r.GET("/students", controllers.FindStudents)
-	r.GET("/students/:studentId", controllers.FindStudentById)
-	r.GET("/students/search/:studentCpf", controllers.FindStudentByCpf)
-	r.POST("/students", controllers.CreateStudent)
-	r.PATCH("/students/:studentId", controllers.UpdateStudent)
-	r.DELETE("/students/:studentId", controllers.DeleteStudent)
-	r.Run()
+type Routes struct {
+	studentController *controllers.StudentController
+}
+
+func NewRoutes(studentController *controllers.StudentController) *Routes {
+	return &Routes{
+		studentController: studentController,
+	}
+}
+
+func (r *Routes) HandleRequests() {
+	s := gin.Default()
+	s.GET("/students", r.studentController.FindStudents)
+	s.GET("/students/:studentId", r.studentController.FindStudentById)
+	s.GET("/students/search/:studentCpf", r.studentController.FindStudentByCpf)
+	s.POST("/students", r.studentController.CreateStudent)
+	s.PATCH("/students/:studentId", r.studentController.UpdateStudent)
+	s.DELETE("/students/:studentId", r.studentController.DeleteStudent)
+	s.Run()
 }
