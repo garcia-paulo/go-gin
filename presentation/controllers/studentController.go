@@ -3,29 +3,29 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/garcia-paulo/go-gin/Application/servicers"
 	"github.com/garcia-paulo/go-gin/Domain/models"
-	"github.com/garcia-paulo/go-gin/Infra/repositories"
 	"github.com/gin-gonic/gin"
 )
 
 type StudentController struct {
-	studentRepository *repositories.StudentRepository
+	studentServicer *servicers.StudentServicer
 }
 
-func NewStudentController(studentRepository *repositories.StudentRepository) *StudentController {
+func NewStudentController(studentServicer *servicers.StudentServicer) *StudentController {
 	return &StudentController{
-		studentRepository: studentRepository,
+		studentServicer: studentServicer,
 	}
 }
 
 func (c *StudentController) FindStudents(context *gin.Context) {
-	context.JSON(http.StatusOK, c.studentRepository.FindStudents())
+	context.JSON(http.StatusOK, c.studentServicer.FindStudents())
 }
 
 func (c *StudentController) FindStudentById(context *gin.Context) {
 	id := context.Param("studentId")
 
-	student := c.studentRepository.FindStudentById(id)
+	student := c.studentServicer.FindStudentById(id)
 	if student.ID == 0 {
 		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -39,7 +39,7 @@ func (c *StudentController) FindStudentById(context *gin.Context) {
 func (c *StudentController) FindStudentByCpf(context *gin.Context) {
 	cpf := context.Param("studentCpf")
 
-	student := c.studentRepository.FindStudentByCpf(cpf)
+	student := c.studentServicer.FindStudentByCpf(cpf)
 	if student.ID == 0 {
 		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -66,7 +66,7 @@ func (c *StudentController) CreateStudent(context *gin.Context) {
 		return
 	}
 
-	c.studentRepository.CreateStudent(&student)
+	c.studentServicer.CreateStudent(&student)
 	context.JSON(http.StatusOK, student)
 }
 
@@ -86,8 +86,8 @@ func (c *StudentController) UpdateStudent(context *gin.Context) {
 		return
 	}
 
-	student := c.studentRepository.FindStudentById(studentId)
-	c.studentRepository.UpdateStudent(&student, data)
+	student := c.studentServicer.FindStudentById(studentId)
+	c.studentServicer.UpdateStudent(&student, data)
 	if student.ID == 0 {
 		context.JSON(http.StatusNotFound, gin.H{
 			"error": "Student not found.",
@@ -101,7 +101,7 @@ func (c *StudentController) UpdateStudent(context *gin.Context) {
 func (c *StudentController) DeleteStudent(context *gin.Context) {
 	studentId := context.Param("studentId")
 
-	c.studentRepository.DeleteStudent(studentId)
+	c.studentServicer.DeleteStudent(studentId)
 	context.JSON(http.StatusOK, gin.H{
 		"message": "Student succesfully deleted.",
 	})

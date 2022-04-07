@@ -7,18 +7,20 @@
 package main
 
 import (
+	"github.com/garcia-paulo/go-gin/Application/servicers"
 	"github.com/garcia-paulo/go-gin/Infra/database"
 	"github.com/garcia-paulo/go-gin/Infra/repositories"
 	"github.com/garcia-paulo/go-gin/Presentation/controllers"
 	"github.com/garcia-paulo/go-gin/Presentation/routes"
 )
 
-// Injectors from container.go:
+// Injectors from wire.go:
 
 func InitializeRoutes() *routes.Routes {
 	db := database.NewDatabase()
 	studentRepository := repositories.NewStudentRepository(db)
-	studentController := controllers.NewStudentController(studentRepository)
+	studentServicer := servicers.NewStudentServicer(studentRepository)
+	studentController := controllers.NewStudentController(studentServicer)
 	routesRoutes := routes.NewRoutes(studentController)
 	return routesRoutes
 }

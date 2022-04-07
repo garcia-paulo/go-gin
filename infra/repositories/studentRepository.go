@@ -21,9 +21,9 @@ func (r *StudentRepository) FindStudents() []models.Student {
 	return students
 }
 
-func (r *StudentRepository) FindStudentById(id string) models.Student {
+func (r *StudentRepository) FindStudentById(studentId string) models.Student {
 	student := models.Student{}
-	r.database.First(&student, id)
+	r.database.First(&student, studentId)
 	return student
 }
 
