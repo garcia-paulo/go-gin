@@ -1,6 +1,8 @@
 package servicers
 
 import (
+	"time"
+
 	"github.com/garcia-paulo/go-gin/Domain/models"
 	"github.com/garcia-paulo/go-gin/Infra/repositories"
 )
@@ -32,6 +34,7 @@ func (s *StudentServicer) CreateStudent(student *models.Student) {
 }
 
 func (s *StudentServicer) UpdateStudent(student *models.Student, data models.Student) {
+	student.UpdatedAt = time.Now()
 	s.studentRepository.UpdateStudent(student, data)
 }
 
