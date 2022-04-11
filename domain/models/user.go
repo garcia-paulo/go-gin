@@ -8,7 +8,7 @@ import (
 type User struct {
 	gorm.Model
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"cpf"`
 }
 
 func (u *User) Validate() error {
