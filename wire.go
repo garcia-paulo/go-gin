@@ -12,12 +12,13 @@ import (
 	"github.com/google/wire"
 )
 
-func InitializeRoutes() *routes.Routes {
+func InitializeRoutes() *routes.Server {
 	panic(wire.Build(
 		database.NewDatabase,
 		repositories.NewStudentRepository,
 		servicers.NewStudentServicer,
 		controllers.NewStudentController,
 		routes.NewRoutes,
+		routes.NewServer,
 	))
 }

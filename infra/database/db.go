@@ -12,6 +12,7 @@ func ConnectDatabase(connectionString string) *gorm.DB {
 		panic(err.Error())
 	}
 	DB.AutoMigrate(&models.Student{})
+	DB.AutoMigrate(&models.User{})
 
 	return DB
 }

@@ -1,6 +1,6 @@
 package main
 
 func main() {
-	r := InitializeRoutes()
-	r.HandleRequests()
+	s := InitializeRoutes()
+	s.Serve()
 }
