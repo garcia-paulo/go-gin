@@ -3,8 +3,8 @@ package servicers
 import (
 	"time"
 
-	"github.com/garcia-paulo/go-gin/Domain/models"
-	"github.com/garcia-paulo/go-gin/Infra/repositories"
+	"github.com/garcia-paulo/go-gin/domain/models"
+	"github.com/garcia-paulo/go-gin/infra/repositories"
 )
 
 type StudentServicer struct {

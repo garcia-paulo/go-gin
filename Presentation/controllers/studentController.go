@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/garcia-paulo/go-gin/Application/servicers"
-	"github.com/garcia-paulo/go-gin/Domain/models"
+	"github.com/garcia-paulo/go-gin/application/servicers"
+	"github.com/garcia-paulo/go-gin/domain/models"
 	"github.com/gin-gonic/gin"
 )
 

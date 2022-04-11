@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/garcia-paulo/go-gin/Domain/models"
+	"github.com/garcia-paulo/go-gin/domain/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

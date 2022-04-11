@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/garcia-paulo/go-gin/Domain/models"
+	"github.com/garcia-paulo/go-gin/domain/models"
 	"gorm.io/gorm"
 )
 
