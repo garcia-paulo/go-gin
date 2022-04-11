@@ -16,9 +16,13 @@ func InitializeRoutes() *routes.Server {
 	panic(wire.Build(
 		database.NewDatabase,
 		repositories.NewStudentRepository,
+		repositories.NewUserRepository,
 		servicers.NewStudentServicer,
+		servicers.NewUserServicer,
 		controllers.NewStudentController,
-		routes.NewRoutes,
+		controllers.NewUserController,
+		routes.NewStudentRoutes,
+		routes.NewUserRoutes,
 		routes.NewServer,
 	))
 }

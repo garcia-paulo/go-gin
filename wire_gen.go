@@ -21,7 +21,11 @@ func InitializeRoutes() *routes.Server {
 	studentRepository := repositories.NewStudentRepository(db)
 	studentServicer := servicers.NewStudentServicer(studentRepository)
 	studentController := controllers.NewStudentController(studentServicer)
-	studentRoutes := routes.NewRoutes(studentController)
-	server := routes.NewServer(studentRoutes)
+	studentRoutes := routes.NewStudentRoutes(studentController)
+	userRepository := repositories.NewUserRepository(db)
+	userServicer := servicers.NewUserServicer(userRepository)
+	userController := controllers.NewUserController(userServicer)
+	userRoutes := routes.NewUserRoutes(userController)
+	server := routes.NewServer(studentRoutes, userRoutes)
 	return server
 }

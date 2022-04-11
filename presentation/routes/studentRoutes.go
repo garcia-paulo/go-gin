@@ -9,7 +9,7 @@ type StudentRoutes struct {
 	studentController *controllers.StudentController
 }
 
-func NewRoutes(studentController *controllers.StudentController) *StudentRoutes {
+func NewStudentRoutes(studentController *controllers.StudentController) *StudentRoutes {
 	return &StudentRoutes{
 		studentController: studentController,
 	}
