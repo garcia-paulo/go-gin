@@ -29,7 +29,7 @@ func (r *StudentRepository) FindStudentById(studentId string) models.Student {
 
 func (r *StudentRepository) FindStudentByCpf(cpf string) models.Student {
 	student := models.Student{}
-	r.database.Where(&models.Student{CPF: cpf}).First(&student)
+	r.database.Where(models.Student{CPF: cpf}).First(&student)
 	return student
 }
 
