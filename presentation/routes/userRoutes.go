@@ -16,6 +16,8 @@ func NewUserRoutes(userController *controllers.UserController) *UserRoutes {
 }
 
 func (r *UserRoutes) HandleRequests(g *gin.Engine) {
-	g.POST("/users", r.userController.CreateUser)
-	g.POST("/users/auth", r.userController.AuthenticateUser)
+	routes := g.Group("/users")
+
+	routes.POST("/", r.userController.CreateUser)
+	routes.POST("/auth", r.userController.AuthenticateUser)
 }

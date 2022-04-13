@@ -5,6 +5,7 @@ import (
 
 	dtos "github.com/garcia-paulo/go-gin/application/dtos/user"
 	"github.com/garcia-paulo/go-gin/application/servicers"
+	"github.com/garcia-paulo/go-gin/application/utils"
 	"github.com/garcia-paulo/go-gin/domain/models"
 	"github.com/gin-gonic/gin"
 )
@@ -23,24 +24,18 @@ func (c *UserController) CreateUser(context *gin.Context) {
 	user := models.User{}
 
 	if err := context.ShouldBindJSON(&user); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	if err := user.Validate(); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	response, err := c.userServicer.CreateUser(user)
 	if err != nil {
-		context.JSON(http.StatusForbidden, gin.H{
-			"error": err.Error(),
-		})
+		context.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
@@ -51,17 +46,13 @@ func (c *UserController) AuthenticateUser(context *gin.Context) {
 	user := dtos.UserRequest{}
 
 	if err := context.ShouldBindJSON(&user); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	response, err := c.userServicer.AuthenticateUser(user)
 	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{
-			"error": err.Error(),
-		})
+		context.JSON(http.StatusUnauthorized, utils.ErrorResponse(err))
 		return
 	}
 

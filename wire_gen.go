@@ -7,6 +7,7 @@
 package main
 
 import (
+	"github.com/garcia-paulo/go-gin/application/middlewares/auth"
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/token"
 	"github.com/garcia-paulo/go-gin/infra/config"
@@ -24,10 +25,11 @@ func InitializeRoutes() *routes.Server {
 	studentRepository := repositories.NewStudentRepository(db)
 	studentServicer := servicers.NewStudentServicer(studentRepository)
 	studentController := controllers.NewStudentController(studentServicer)
-	studentRoutes := routes.NewStudentRoutes(studentController)
+	tokenMaker := token.NewTokenMaker(configConfig)
+	authMiddleware := middlewares_auth.NewAuthMiddleware(tokenMaker)
+	studentRoutes := routes.NewStudentRoutes(studentController, authMiddleware)
 	userRepository := repositories.NewUserRepository(db)
-	pasetoMaker := token.NewPasetoMaker(configConfig)
-	userServicer := servicers.NewUserServicer(userRepository, pasetoMaker, configConfig)
+	userServicer := servicers.NewUserServicer(userRepository, tokenMaker, configConfig)
 	userController := controllers.NewUserController(userServicer)
 	userRoutes := routes.NewUserRoutes(userController)
 	server := routes.NewServer(studentRoutes, userRoutes, configConfig)

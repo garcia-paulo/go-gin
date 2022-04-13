@@ -1,6 +1,7 @@
 package servicers
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/garcia-paulo/go-gin/domain/models"
@@ -29,8 +30,12 @@ func (s *StudentServicer) FindStudentByCpf(cpf string) models.Student {
 	return s.studentRepository.FindStudentByCpf(cpf)
 }
 
-func (s *StudentServicer) CreateStudent(student *models.Student) {
+func (s *StudentServicer) CreateStudent(student *models.Student) error {
 	s.studentRepository.CreateStudent(student)
+	if student.ID == 0 {
+		return fmt.Errorf("error when saving to the database")
+	}
+	return nil
 }
 
 func (s *StudentServicer) UpdateStudent(student *models.Student, data models.Student) {

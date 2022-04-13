@@ -4,6 +4,7 @@
 package main
 
 import (
+	middleware "github.com/garcia-paulo/go-gin/application/middlewares/auth"
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/token"
 	"github.com/garcia-paulo/go-gin/infra/config"
@@ -20,6 +21,7 @@ func InitializeRoutes() *routes.Server {
 		database.NewDatabase,
 		repositories.NewStudentRepository,
 		repositories.NewUserRepository,
+		middleware.NewAuthMiddleware,
 		servicers.NewStudentServicer,
 		servicers.NewUserServicer,
 		controllers.NewStudentController,
@@ -27,6 +29,6 @@ func InitializeRoutes() *routes.Server {
 		routes.NewStudentRoutes,
 		routes.NewUserRoutes,
 		routes.NewServer,
-		token.NewPasetoMaker,
+		token.NewTokenMaker,
 	))
 }

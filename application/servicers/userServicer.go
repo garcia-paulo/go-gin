@@ -12,14 +12,14 @@ import (
 
 type UserServicer struct {
 	userRepository *repositories.UserRepository
-	pasetoMaker    *token.PasetoMaker
+	tokenMaker     *token.TokenMaker
 	config         *config.Config
 }
 
-func NewUserServicer(userRepository *repositories.UserRepository, pasetoMaker *token.PasetoMaker, config *config.Config) *UserServicer {
+func NewUserServicer(userRepository *repositories.UserRepository, tokenMaker *token.TokenMaker, config *config.Config) *UserServicer {
 	return &UserServicer{
 		userRepository: userRepository,
-		pasetoMaker:    pasetoMaker,
+		tokenMaker:     tokenMaker,
 		config:         config,
 	}
 }
@@ -33,7 +33,7 @@ func (s *UserServicer) CreateUser(user models.User) (*dtos.UserResponse, error) 
 		return nil, fmt.Errorf("error when saving to database")
 	}
 
-	token, err := s.pasetoMaker.CreateToken(user.Username, s.config.TokenDuration)
+	token, err := s.tokenMaker.CreateToken(user.Username, s.config.TokenDuration)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (s *UserServicer) AuthenticateUser(user dtos.UserRequest) (*dtos.UserRespon
 		return nil, err
 	}
 
-	token, err := s.pasetoMaker.CreateToken(foundUser.Username, s.config.TokenDuration)
+	token, err := s.tokenMaker.CreateToken(foundUser.Username, s.config.TokenDuration)
 	if err != nil {
 		return nil, err
 	}

@@ -46,7 +46,6 @@ func CreateStudentMock() {
 	student := models.Student{
 		Name: "Test",
 		CPF:  "12345678901",
-		RG:   "123456789",
 	}
 	db.Create(&student)
 	mockStudent = student
@@ -95,7 +94,6 @@ func TestCreateStudent(t *testing.T) {
 	data := models.Student{
 		Name: "Test",
 		CPF:  "12345678901",
-		RG:   "123456789",
 	}
 
 	jsonData, _ := json.Marshal(data)
@@ -119,7 +117,6 @@ func TestUpdateStudent(t *testing.T) {
 	data := models.Student{
 		Name: "Update Test",
 		CPF:  "12345678901",
-		RG:   "123456789",
 	}
 	jsonData, _ := json.Marshal(data)
 	req, _ := http.NewRequest("PATCH", "/students/"+strconv.Itoa(int(mockStudent.ID)), bytes.NewBuffer(jsonData))
