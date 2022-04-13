@@ -9,6 +9,7 @@ package main
 import (
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/token"
+	"github.com/garcia-paulo/go-gin/infra/config"
 	"github.com/garcia-paulo/go-gin/infra/database"
 	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/garcia-paulo/go-gin/presentation/controllers"
@@ -18,16 +19,17 @@ import (
 // Injectors from wire.go:
 
 func InitializeRoutes() *routes.Server {
-	db := database.NewDatabase()
+	configConfig := config.NewConfig()
+	db := database.NewDatabase(configConfig)
 	studentRepository := repositories.NewStudentRepository(db)
 	studentServicer := servicers.NewStudentServicer(studentRepository)
 	studentController := controllers.NewStudentController(studentServicer)
 	studentRoutes := routes.NewStudentRoutes(studentController)
 	userRepository := repositories.NewUserRepository(db)
-	pasetoMaker := token.NewPasetoMaker()
-	userServicer := servicers.NewUserServicer(userRepository, pasetoMaker)
+	pasetoMaker := token.NewPasetoMaker(configConfig)
+	userServicer := servicers.NewUserServicer(userRepository, pasetoMaker, configConfig)
 	userController := controllers.NewUserController(userServicer)
 	userRoutes := routes.NewUserRoutes(userController)
-	server := routes.NewServer(studentRoutes, userRoutes)
+	server := routes.NewServer(studentRoutes, userRoutes, configConfig)
 	return server
 }

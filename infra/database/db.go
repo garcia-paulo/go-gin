@@ -2,12 +2,13 @@ package database
 
 import (
 	"github.com/garcia-paulo/go-gin/domain/models"
+	"github.com/garcia-paulo/go-gin/infra/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase(connectionString string) *gorm.DB {
-	DB, err := gorm.Open(postgres.Open(connectionString))
+func NewDatabase(config *config.Config) *gorm.DB {
+	DB, err := gorm.Open(postgres.Open(config.DBSource))
 	if err != nil {
 		panic(err.Error())
 	}
@@ -15,8 +16,4 @@ func ConnectDatabase(connectionString string) *gorm.DB {
 	DB.AutoMigrate(&models.User{})
 
 	return DB
-}
-
-func NewDatabase() *gorm.DB {
-	return ConnectDatabase("host=localhost user=postgres password=postgres dbname=go-gin port=5432 sslmode=disable")
 }

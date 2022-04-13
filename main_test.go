@@ -7,9 +7,11 @@ import (
 	"net/http/httptest"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/domain/models"
+	"github.com/garcia-paulo/go-gin/infra/config"
 	"github.com/garcia-paulo/go-gin/infra/database"
 	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/garcia-paulo/go-gin/presentation/controllers"
@@ -19,7 +21,13 @@ import (
 )
 
 func Setup() *gin.Engine {
-	db = database.NewDatabase()
+	duration, _ := time.ParseDuration("1m")
+	db = database.NewDatabase(&config.Config{
+		DBSource:      "",
+		ServerPort:    ":8080",
+		TokenKey:      "STRING_NÃO_ESCONDIDA_DE_32_BYTE",
+		TokenDuration: duration,
+	})
 	studentRepository = *repositories.NewStudentRepository(db)
 	studentServicer = *servicers.NewStudentServicer(&studentRepository)
 	studentController = *controllers.NewStudentController(&studentServicer)

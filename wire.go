@@ -6,6 +6,7 @@ package main
 import (
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/token"
+	"github.com/garcia-paulo/go-gin/infra/config"
 	"github.com/garcia-paulo/go-gin/infra/database"
 	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/garcia-paulo/go-gin/presentation/controllers"
@@ -15,6 +16,7 @@ import (
 
 func InitializeRoutes() *routes.Server {
 	panic(wire.Build(
+		config.NewConfig,
 		database.NewDatabase,
 		repositories.NewStudentRepository,
 		repositories.NewUserRepository,

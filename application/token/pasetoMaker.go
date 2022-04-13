@@ -3,6 +3,7 @@ package token
 import (
 	"time"
 
+	"github.com/garcia-paulo/go-gin/infra/config"
 	"github.com/o1egl/paseto"
 )
 
@@ -11,10 +12,10 @@ type PasetoMaker struct {
 	symmetricKey []byte
 }
 
-func NewPasetoMaker() *PasetoMaker {
+func NewPasetoMaker(config *config.Config) *PasetoMaker {
 	maker := &PasetoMaker{
 		paseto:       paseto.NewV2(),
-		symmetricKey: []byte("STRING_NÃO_ESCONDIDA_DE_32_BYTE"),
+		symmetricKey: []byte(config.TokenKey),
 	}
 	return maker
 }
