@@ -5,6 +5,7 @@ package main
 
 import (
 	"github.com/garcia-paulo/go-gin/application/servicers"
+	"github.com/garcia-paulo/go-gin/application/token"
 	"github.com/garcia-paulo/go-gin/infra/database"
 	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/garcia-paulo/go-gin/presentation/controllers"
@@ -24,5 +25,6 @@ func InitializeRoutes() *routes.Server {
 		routes.NewStudentRoutes,
 		routes.NewUserRoutes,
 		routes.NewServer,
+		token.NewPasetoMaker,
 	))
 }

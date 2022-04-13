@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/garcia-paulo/go-gin/application/servicers"
+	"github.com/garcia-paulo/go-gin/application/token"
 	"github.com/garcia-paulo/go-gin/infra/database"
 	"github.com/garcia-paulo/go-gin/infra/repositories"
 	"github.com/garcia-paulo/go-gin/presentation/controllers"
@@ -23,7 +24,8 @@ func InitializeRoutes() *routes.Server {
 	studentController := controllers.NewStudentController(studentServicer)
 	studentRoutes := routes.NewStudentRoutes(studentController)
 	userRepository := repositories.NewUserRepository(db)
-	userServicer := servicers.NewUserServicer(userRepository)
+	pasetoMaker := token.NewPasetoMaker()
+	userServicer := servicers.NewUserServicer(userRepository, pasetoMaker)
 	userController := controllers.NewUserController(userServicer)
 	userRoutes := routes.NewUserRoutes(userController)
 	server := routes.NewServer(studentRoutes, userRoutes)
