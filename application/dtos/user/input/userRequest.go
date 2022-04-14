@@ -1,4 +1,4 @@
-package dtos_user
+package input_user
 
 import "gopkg.in/validator.v2"
 

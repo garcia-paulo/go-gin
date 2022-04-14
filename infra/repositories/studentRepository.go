@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/garcia-paulo/go-gin/domain/models"
 	"gorm.io/gorm"
 )
@@ -21,16 +23,22 @@ func (r *StudentRepository) FindStudents() []models.Student {
 	return students
 }
 
-func (r *StudentRepository) FindStudentById(studentId string) models.Student {
-	student := models.Student{}
+func (r *StudentRepository) FindStudentById(studentId string) (*models.Student, error) {
+	student := &models.Student{}
 	r.database.First(&student, studentId)
-	return student
+	if student.ID == 0 {
+		return nil, fmt.Errorf("student not found")
+	}
+	return student, nil
 }
 
-func (r *StudentRepository) FindStudentByCpf(cpf string) models.Student {
-	student := models.Student{}
-	r.database.Where(models.Student{CPF: cpf}).First(&student)
-	return student
+func (r *StudentRepository) FindStudentByCpf(cpf string) (*models.Student, error) {
+	student := &models.Student{}
+	r.database.Where(models.Student{CPF: cpf}).First(student)
+	if student.ID == 0 {
+		return nil, fmt.Errorf("student not found")
+	}
+	return student, nil
 }
 
 func (r *StudentRepository) CreateStudent(student *models.Student) {

@@ -3,10 +3,9 @@ package controllers
 import (
 	"net/http"
 
-	dtos "github.com/garcia-paulo/go-gin/application/dtos/user"
+	input_user "github.com/garcia-paulo/go-gin/application/dtos/user/input"
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/utils"
-	"github.com/garcia-paulo/go-gin/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +20,7 @@ func NewUserController(userServicer *servicers.UserServicer) *UserController {
 }
 
 func (c *UserController) CreateUser(context *gin.Context) {
-	user := models.User{}
+	user := input_user.UserRequest{}
 
 	if err := context.ShouldBindJSON(&user); err != nil {
 		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -43,7 +42,7 @@ func (c *UserController) CreateUser(context *gin.Context) {
 }
 
 func (c *UserController) AuthenticateUser(context *gin.Context) {
-	user := dtos.UserRequest{}
+	user := input_user.UserRequest{}
 
 	if err := context.ShouldBindJSON(&user); err != nil {
 		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))

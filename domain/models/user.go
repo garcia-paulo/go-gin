@@ -1,33 +1,33 @@
 package models
 
 import (
+	input_user "github.com/garcia-paulo/go-gin/application/dtos/user/input"
 	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/validator.v2"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Username       string `json:"username" validate:"min=4,max=16" gorm:"uniqueIndex"`
-	HashedPassword string `json:"password" validate:"min=6,max=18"`
+	Username       string
+	HashedPassword string
+}
+
+func NewUser(user input_user.UserRequest) *User {
+	return &User{
+		Username:       user.Username,
+		HashedPassword: user.Password,
+	}
 }
 
 func (u *User) HashPassword() error {
-	pwd, err := bcrypt.GenerateFromPassword([]byte(u.HashedPassword), bcrypt.DefaultCost)
+	password, err := bcrypt.GenerateFromPassword([]byte(u.HashedPassword), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
-	u.HashedPassword = string(pwd)
+	u.HashedPassword = string(password)
 	return nil
 }
 
 func (u *User) Authenticate(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(u.HashedPassword), []byte(password))
-}
-
-func (u *User) Validate() error {
-	if err := validator.Validate(u); err != nil {
-		return err
-	}
-	return nil
 }

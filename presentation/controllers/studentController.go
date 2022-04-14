@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
+	input_student "github.com/garcia-paulo/go-gin/application/dtos/student/input"
 	"github.com/garcia-paulo/go-gin/application/servicers"
 	"github.com/garcia-paulo/go-gin/application/utils"
-	"github.com/garcia-paulo/go-gin/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,9 +26,9 @@ func (c *StudentController) FindStudents(context *gin.Context) {
 func (c *StudentController) FindStudentById(context *gin.Context) {
 	id := context.Param("studentId")
 
-	student := c.studentServicer.FindStudentById(id)
-	if student.ID == 0 {
-		context.JSON(http.StatusNotFound, utils.ErrorResponse(fmt.Errorf("student not found")))
+	student, err := c.studentServicer.FindStudentById(id)
+	if err != nil {
+		context.JSON(http.StatusNotFound, utils.ErrorResponse(err))
 		return
 	}
 
@@ -39,9 +38,9 @@ func (c *StudentController) FindStudentById(context *gin.Context) {
 func (c *StudentController) FindStudentByCpf(context *gin.Context) {
 	cpf := context.Param("studentCpf")
 
-	student := c.studentServicer.FindStudentByCpf(cpf)
-	if student.ID == 0 {
-		context.JSON(http.StatusNotFound, utils.ErrorResponse(fmt.Errorf("student not found")))
+	student, err := c.studentServicer.FindStudentByCpf(cpf)
+	if err != nil {
+		context.JSON(http.StatusNotFound, utils.ErrorResponse(err))
 		return
 	}
 
@@ -49,7 +48,7 @@ func (c *StudentController) FindStudentByCpf(context *gin.Context) {
 }
 
 func (c *StudentController) CreateStudent(context *gin.Context) {
-	student := models.Student{}
+	student := input_student.StudentRequest{}
 
 	if err := context.ShouldBindJSON(&student); err != nil {
 		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -60,17 +59,18 @@ func (c *StudentController) CreateStudent(context *gin.Context) {
 		return
 	}
 
-	if err := c.studentServicer.CreateStudent(&student); err != nil {
+	response, err := c.studentServicer.CreateStudent(student)
+	if err != nil {
 		context.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
-	context.JSON(http.StatusOK, student)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *StudentController) UpdateStudent(context *gin.Context) {
 	studentId := context.Param("studentId")
 
-	data := models.Student{}
+	data := input_student.StudentRequest{}
 	if err := context.ShouldBindJSON(&data); err != nil {
 		context.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 	}
@@ -79,14 +79,13 @@ func (c *StudentController) UpdateStudent(context *gin.Context) {
 		return
 	}
 
-	student := c.studentServicer.FindStudentById(studentId)
-	c.studentServicer.UpdateStudent(&student, data)
-	if student.ID == 0 {
-		context.JSON(http.StatusNotFound, utils.ErrorResponse(fmt.Errorf("student not found")))
+	response, err := c.studentServicer.UpdateStudent(studentId, data)
+	if err != nil {
+		context.JSON(http.StatusNotFound, utils.ErrorResponse(err))
 		return
 	}
 
-	context.JSON(http.StatusOK, student)
+	context.JSON(http.StatusOK, response)
 }
 
 func (c *StudentController) DeleteStudent(context *gin.Context) {

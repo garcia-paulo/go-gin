@@ -3,7 +3,8 @@ package servicers
 import (
 	"fmt"
 
-	dtos "github.com/garcia-paulo/go-gin/application/dtos/user"
+	input_user "github.com/garcia-paulo/go-gin/application/dtos/user/input"
+	output_user "github.com/garcia-paulo/go-gin/application/dtos/user/output"
 	"github.com/garcia-paulo/go-gin/application/token"
 	"github.com/garcia-paulo/go-gin/domain/models"
 	"github.com/garcia-paulo/go-gin/infra/config"
@@ -24,11 +25,12 @@ func NewUserServicer(userRepository *repositories.UserRepository, tokenMaker *to
 	}
 }
 
-func (s *UserServicer) CreateUser(user models.User) (*dtos.UserResponse, error) {
+func (s *UserServicer) CreateUser(data input_user.UserRequest) (*output_user.UserResponse, error) {
+	user := models.NewUser(data)
 	if err := user.HashPassword(); err != nil {
 		return nil, err
 	}
-	s.userRepository.CreateUser(&user)
+	s.userRepository.CreateUser(user)
 	if user.ID == 0 {
 		return nil, fmt.Errorf("error when saving to database")
 	}
@@ -38,10 +40,10 @@ func (s *UserServicer) CreateUser(user models.User) (*dtos.UserResponse, error) 
 		return nil, err
 	}
 
-	return dtos.NewUserResponse(user, token), nil
+	return output_user.NewUserResponse(user, token), nil
 }
 
-func (s *UserServicer) AuthenticateUser(user dtos.UserRequest) (*dtos.UserResponse, error) {
+func (s *UserServicer) AuthenticateUser(user input_user.UserRequest) (*output_user.UserResponse, error) {
 	foundUser := s.userRepository.FindUserByUsername(user.Username)
 	err := foundUser.Authenticate(user.Password)
 	if err != nil {
@@ -53,5 +55,5 @@ func (s *UserServicer) AuthenticateUser(user dtos.UserRequest) (*dtos.UserRespon
 		return nil, err
 	}
 
-	return dtos.NewUserResponse(foundUser, token), err
+	return output_user.NewUserResponse(&foundUser, token), err
 }

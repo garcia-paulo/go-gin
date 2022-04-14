@@ -1,4 +1,4 @@
-package dtos_user
+package output_user
 
 import (
 	"time"
@@ -16,7 +16,7 @@ type UserResponse struct {
 	Token     string         `json:"token"`
 }
 
-func NewUserResponse(user models.User, token string) *UserResponse {
+func NewUserResponse(user *models.User, token string) *UserResponse {
 	return &UserResponse{
 		ID:        user.ID,
 		CreatedAt: user.CreatedAt,
